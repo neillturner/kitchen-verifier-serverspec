@@ -2,7 +2,7 @@
 [![Gem Downloads](http://ruby-gem-downloads-badge.herokuapp.com/kitchen-verifier-serverspec?type=total&color=brightgreen)](https://rubygems.org/gems/kitchen-verifier-serverspec)
 [![Build Status](https://travis-ci.org/neillturner/kitchen-verifier-serverspec.png)](https://travis-ci.org/neillturner/kitchen-verifier-serverspec)
 
-# Kitchen::Softlayer
+# Kitchen::Verifier::Serverspec
 
 A Test Kitchen Serverspec Verifer without having to transit the Busser layer.
 
@@ -37,6 +37,7 @@ suites:
       - mycompany_base/spec/acceptance/base_spec.rb
 ```
 
+See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_beaker_repo)
 
 # Serverspec Verifier Options
 
