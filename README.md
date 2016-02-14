@@ -34,7 +34,7 @@ suites:
   - name: base
     verifier:
       patterns:
-      - mycompany_base/spec/acceptance/base_spec.rb
+      - modules/mycompany_base/spec/acceptance/base_spec.rb
 ```
 
 See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_beaker_repo)
