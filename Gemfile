@@ -1,4 +1,6 @@
+# -*- encoding: utf-8 -*-
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in kitchen-verifier-serverspec.gemspec
 gemspec
+
+gem 'net-ssh','~> 2.9'
