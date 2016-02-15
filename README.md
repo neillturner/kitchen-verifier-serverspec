@@ -6,10 +6,14 @@
 
 A Test Kitchen Serverspec Verifer without having to transit the Busser layer.
 
+This is a first version. Currently it only supports running serverspec remotely on the server. 
+It could be easily enhanced to run serverspec locally on your workstation. Also the installs 
+don't cover all the possible options yet.
+
 
 ## Installation
 
-Add this line to your application's Gemfile:
+On your workstation add this line to your Gemfile:
 
     gem 'kitchen-verifier-serverspec'
 
@@ -20,6 +24,17 @@ And then execute:
 Or install it yourself as:
 
     $ gem install kitchen-verifier-serverspec
+
+When it runs it install serverspec on the remote server. This can be configured by passing a Gemfile like this: 
+
+```
+source 'https://rubygems.org'
+
+gem 'net-ssh','~> 2.9'
+gem 'serverspec'
+```
+
+this allows extra dependencies to be specified and the version of serverspec specified. 
 
 ## Usage
 
@@ -54,6 +69,9 @@ install_commmand | 'bundle install' | command to install serverspec
 test_serverspec_installed | true | only run install_command if serverspec not installed
 extra_flags | nil | extra flags to add to ther serverspec command
 remove_default_path | false | remove the default_path after successful serverspec run
+http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
+https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
+sudo | nil | use sudo to run commands
 
 
 ## Contributing

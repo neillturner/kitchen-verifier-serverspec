@@ -60,11 +60,22 @@ module Kitchen
 
       ## for legacy drivers.
       def run_command
+        sleep_if_set
         if config[:remote_exec]
-          commands
+          serverspec_commands
         else
           shellout
-          nil
+          init
+        end
+      end
+
+      def setup_cmd
+        sleep_if_set
+        if config[:remote_exec]
+          install_command
+        else
+          shellout
+          init
         end
       end
 
@@ -78,7 +89,6 @@ module Kitchen
         else
           <<-INSTALL
           if [ -d #{config[:default_path]} ]; then
-            #{install_serverspec}
             cd #{config[:default_path]}
             #{rspec_commands}
             #{remove_default_path}
@@ -148,7 +158,7 @@ module Kitchen
       end
 
       def read_gemfile
-        data = "#{sudo('rm')} -f #{config[:default_path]}/Gemfile"
+        data = "#{sudo('rm')} -f #{config[:default_path]}/Gemfile\n"
         f = File.open(config[:gemfile], "r")
         f.each_line { |line|
           data = "#{data}#{sudo('echo')} \"#{line}\" >> #{config[:default_path]}/Gemfile\n"
