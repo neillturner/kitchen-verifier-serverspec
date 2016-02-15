@@ -1,0 +1,14 @@
+Documentation:
+  Enabled: false
+AlignParameters:
+  Enabled: true
+Encoding:
+  Enabled: true
+HashSyntax:
+  Enabled: true
+LineLength:
+  Enabled: false
+MethodLength:
+  Max: 30
+NumericLiterals:
+  MinDigits: 30
