@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "kitchen/verifier/base"
+require 'kitchen/verifier/base'
 
 module Kitchen
 
@@ -159,12 +159,12 @@ module Kitchen
 
       def read_gemfile
         data = "#{sudo('rm')} -f #{config[:default_path]}/Gemfile\n"
-        f = File.open(config[:gemfile], "r")
-        f.each_line { |line|
+        f = File.open(config[:gemfile], 'r')
+        f.each_line do |line|
           data = "#{data}#{sudo('echo')} \"#{line}\" >> #{config[:default_path]}/Gemfile\n"
-        }
-       f.close
-       data
+        end
+        f.close
+        data
       end
 
       def remove_default_path
@@ -177,7 +177,7 @@ module Kitchen
       end
 
       def fi_test_serverspec_installed
-        config[:test_serverspec_installed] ? "fi" : nil
+        config[:test_serverspec_installed] ? 'fi' : nil
       end
 
       def rspec_commands
@@ -204,7 +204,7 @@ module Kitchen
       end
 
       def color
-        config[:color] ? "-c" : nil
+        config[:color] ? '-c' : nil
       end
 
       # Sleep for a period of time, if a value is set in the config.
@@ -212,7 +212,7 @@ module Kitchen
       # @api private
       def sleep_if_set
         config[:sleep].to_i.times do
-          print "."
+          print '.'
           sleep 1
         end
         puts
@@ -231,11 +231,11 @@ module Kitchen
 
       def merge_state_to_env(state)
         env_state = { :environment => {} }
-        env_state[:environment]["KITCHEN_INSTANCE"] = instance.name
-        env_state[:environment]["KITCHEN_PLATFORM"] = instance.platform.name
-        env_state[:environment]["KITCHEN_SUITE"] = instance.suite.name
+        env_state[:environment]['KITCHEN_INSTANCE'] = instance.name
+        env_state[:environment]['KITCHEN_PLATFORM'] = instance.platform.name
+        env_state[:environment]['KITCHEN_SUITE'] = instance.suite.name
         state.each_pair do |key, value|
-          env_state[:environment]["KITCHEN_" + key.to_s.upcase] = value
+          env_state[:environment]['KITCHEN_' + key.to_s.upcase] = value
         end
         config[:shellout_opts].merge!(env_state)
       end

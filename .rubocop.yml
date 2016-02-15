@@ -6,6 +6,8 @@ ClassLength:
   Max: 300
 ClassVars:
   Enabled: false
+LineLength:
+  Enabled: false
 PerceivedComplexity:
   Max: 10
 AbcSize:
