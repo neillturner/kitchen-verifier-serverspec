@@ -1,14 +1,22 @@
-CyclomaticComplexity:
-  Max: 8
-MethodLength:
-  Max: 30
-ClassLength:
-  Max: 300
-ClassVars:
+Documentation:
   Enabled: false
+AlignParameters:
+  Enabled: true
+Encoding:
+  Enabled: true
+HashSyntax:
+  Enabled: true
 LineLength:
   Enabled: false
-PerceivedComplexity:
-  Max: 10
+MethodLength:
+  Enabled: false
+ClassLength:
+  Enabled: false
+NumericLiterals:
+  MinDigits: 10
 AbcSize:
-  Max: 41
+  Enabled: false
+MultilineOperationIndentation:
+  Enabled: false
+RedundantFreeze:
+  Enabled: false

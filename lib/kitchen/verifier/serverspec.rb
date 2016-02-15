@@ -188,7 +188,7 @@ module Kitchen
       def sudo_env(pm)
         s = https_proxy ? "https_proxy=#{https_proxy}" : nil
         p = http_proxy ? "http_proxy=#{http_proxy}" : nil
-        p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : "#{sudo(pm)}"
+        p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : sudo(pm).to_s
       end
 
       def http_proxy
