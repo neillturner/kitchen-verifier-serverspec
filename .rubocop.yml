@@ -1,14 +1,12 @@
-Documentation:
-  Enabled: false
-AlignParameters:
-  Enabled: true
-Encoding:
-  Enabled: true
-HashSyntax:
-  Enabled: true
-LineLength:
-  Enabled: false
+CyclomaticComplexity:
+  Max: 8
 MethodLength:
   Max: 30
-NumericLiterals:
-  MinDigits: 30
+ClassLength:
+  Max: 300
+ClassVars:
+  Enabled: false
+PerceivedComplexity:
+  Max: 10
+AbcSize:
+  Max: 41
