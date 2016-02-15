@@ -61,7 +61,7 @@ key | default value | Notes
 sleep | 0 |
 serverspec_command | nil | custom command to run serverspec
 format | 'documentation' | format of serverspec output
-color | true | Enable color in the output
+color | true | enable color in the output
 default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
 patterns | [] | array of patterns for spec test files
 gemfile | nil | custom gemfile to use to install serverspec
