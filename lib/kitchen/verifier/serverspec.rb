@@ -144,9 +144,9 @@ module Kitchen
 
       def install_gemfile
         if config[:gemfile]
-         <<-INSTALL
-         #{read_gemfile}
-         INSTALL
+          <<-INSTALL
+          #{read_gemfile}
+          INSTALL
         else
           <<-INSTALL
           #{sudo('rm')} -f #{config[:default_path]}/Gemfile
