@@ -39,6 +39,9 @@ module Kitchen
       default_config :test_serverspec_installed, true
       default_config :extra_flags, nil
       default_config :remove_default_path, false
+      default_config :env_vars, {}
+      default_config :bundle_path, nil
+      default_config :rspec_path,  nil
 
       # (see Base#call)
       def call(state)
@@ -109,7 +112,7 @@ module Kitchen
               if [ -f /etc/system-release ] || [ grep -q 'Amazon Linux' /etc/system-release ]; then
                 #{sudo_env('yum')} -y install ruby
               else
-                #{sudo('apt-get')} -y install ruby
+                #{sudo_env('apt-get')} -y install ruby
               fi
             fi
           fi
@@ -126,16 +129,17 @@ module Kitchen
       def install_bundler
         <<-INSTALL
           if [ $(#{sudo('gem')} list bundler -i) == 'false' ]; then
-            #{sudo('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+            #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
           fi
         INSTALL
       end
 
       def install_serverspec
+        bundler_cmd = "#{bundler_path}bundler"
         <<-INSTALL
-          #{test_serverspec_installed}
+            #{test_serverspec_installed}
             #{install_gemfile}
-            #{sudo_env('bundler')} install --gemfile=#{config[:default_path]}/Gemfile
+            #{sudo_env(bundler_cmd)} install --gemfile=#{config[:default_path]}/Gemfile
           #{fi_test_serverspec_installed}
         INSTALL
       end
@@ -179,14 +183,30 @@ module Kitchen
       end
 
       def rspec_commands
+        rspec_cmd = "#{rspec_path}rspec"
         info('Running Serverspec')
-        config[:patterns].map { |s| "rspec #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join('\n')
+        config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join('\n')
+      end
+
+      def env_vars
+        return nil if config[:env_vars].none?
+        bash_vars = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
+        debug(bash_vars)
+        bash_vars
       end
 
       def sudo_env(pm)
         s = https_proxy ? "https_proxy=#{https_proxy}" : nil
         p = http_proxy ? "http_proxy=#{http_proxy}" : nil
         p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : sudo(pm).to_s
+      end
+
+      def bundler_path
+        config[:bundler_path] ? "#{config[:bundler_path]}/" : nil
+      end
+
+      def rspec_path
+        config[:rspec_path] ? "#{config[:rspec_path]}/" : nil
       end
 
       def http_proxy

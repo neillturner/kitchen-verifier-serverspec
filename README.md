@@ -54,6 +54,26 @@ suites:
 
 See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_beaker_repo)
 
+or with environment variables
+
+```yaml
+verifier:
+  name: serverspec
+
+suites:
+  - name: base
+    verifier:
+      patterns:
+      - roles/tomcat/spec/tomcat_spec.rb
+      bundler_path: '/usr/local/bin'
+      rspec_path: '/home/vagrant/bin'
+      env_vars:
+        TARGET_HOST: 172.28.128.7
+        LOGIN_USER: vagrant
+        SSH_KEY: 'spec/tomcat_private_key.pem'
+```
+
+
 # Serverspec Verifier Options
 
 key | default value | Notes
@@ -72,6 +92,9 @@ remove_default_path | false | remove the default_path after successful serverspe
 http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
 sudo | nil | use sudo to run commands
+env_vars | {} | environment variable to set for rspec
+bundle_path | nil | path for bundler command
+rspec_path | nil | path for rspec command
 
 
 ## Contributing
