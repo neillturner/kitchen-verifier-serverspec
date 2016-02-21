@@ -54,7 +54,9 @@ module Kitchen
             conn.execute(serverspec_commands)
           end
         else
-          shellout
+          config[:default_path] = Dir.pwd if config[:default_path] == '/tmp/kitchen'
+          install_command
+          serverspec_commands
         end
         debug("[#{name}] Verify completed.")
       end
@@ -62,86 +64,124 @@ module Kitchen
       ## for legacy drivers.
       def run_command
         sleep_if_set
-        if config[:remote_exec]
-          serverspec_commands
-        else
-          shellout
-          init
-        end
+        serverspec_commands
       end
 
       def setup_cmd
         sleep_if_set
-        if config[:remote_exec]
-          install_command
-        else
-          shellout
-          init
-        end
+        install_command
       end
 
       private
 
       def serverspec_commands
-        if config[:serverspec_command]
-          <<-INSTALL
-          #{config[:serverspec_command]}
-          INSTALL
-        else
-          <<-INSTALL
-          if [ -d #{config[:default_path]} ]; then
-            cd #{config[:default_path]}
-            #{rspec_commands}
-            #{remove_default_path}
+        if config[:remote_exec]
+          if config[:serverspec_command]
+            <<-INSTALL
+            #{config[:serverspec_command]}
+            INSTALL
           else
-            echo "ERROR: Default path '#{config[:default_path]}' does not exist"
-            exit 1
-          fi
-          INSTALL
+            <<-INSTALL
+            if [ -d #{config[:default_path]} ]; then
+              cd #{config[:default_path]}
+              #{rspec_commands}
+              #{remove_default_path}
+            else
+              echo "ERROR: Default path '#{config[:default_path]}' does not exist"
+              exit 1
+            fi
+            INSTALL
+          end
+        else
+          if config[:serverspec_command]
+            info("Running command: #{config[:serverspec_command]}")
+            system config[:serverspec_command]
+          else
+            x = rspec_commands
+            info("Running command: #{x}")
+            system x
+          end
         end
       end
 
       def install_command
-        info('Installing ruby, bundler and serverspec')
-        <<-INSTALL
-          if [ ! $(which ruby) ]; then
-            echo '-----> Installing ruby, will try to determine platform os'
-            if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
-              #{sudo_env('yum')} -y install ruby
-            else
-              if [ -f /etc/system-release ] || [ grep -q 'Amazon Linux' /etc/system-release ]; then
+        if config[:remote_exec]
+          info('Installing ruby, bundler and serverspec')
+          <<-INSTALL
+            if [ ! $(which ruby) ]; then
+              echo '-----> Installing ruby, will try to determine platform os'
+              if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
                 #{sudo_env('yum')} -y install ruby
               else
-                #{sudo_env('apt-get')} -y install ruby
+                if [ -f /etc/system-release ] || [ grep -q 'Amazon Linux' /etc/system-release ]; then
+                  #{sudo_env('yum')} -y install ruby
+                else
+                  #{sudo_env('apt-get')} -y install ruby
+                fi
               fi
             fi
-          fi
-          #{install_bundler}
-          if [ -d #{config[:default_path]} ]; then
-            #{install_serverspec}
-          else
-            echo "ERROR: Default path '#{config[:default_path]}' does not exist"
-            exit 1
-          fi
-        INSTALL
+            #{install_bundler}
+            if [ -d #{config[:default_path]} ]; then
+              #{install_serverspec}
+            else
+              echo "ERROR: Default path '#{config[:default_path]}' does not exist"
+              exit 1
+            fi
+          INSTALL
+        else
+          info('Installing bundler and serverspec')
+          install_bundler
+          install_serverspec
+        end
       end
 
       def install_bundler
-        <<-INSTALL
-          if [ $(#{sudo('gem')} list bundler -i) == 'false' ]; then
-            #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
-          fi
-        INSTALL
+        if config[:remote_exec]
+          <<-INSTALL
+            if [ $(#{sudo('gem')} list bundler -i) == 'false' ]; then
+              #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+            fi
+          INSTALL
+        else
+          begin
+            require 'bundler'
+          rescue LoadError
+            system `gem install --no-ri --no-rdoc  bundler`
+          end
+        end
       end
 
       def install_serverspec
-        bundler_cmd = "#{bundler_path}bundler"
-        <<-INSTALL
-            #{test_serverspec_installed}
-            #{install_gemfile}
-            #{sudo_env(bundler_cmd)} install --gemfile=#{config[:default_path]}/Gemfile
-          #{fi_test_serverspec_installed}
-        INSTALL
+        if config[:remote_exec]
+          bundler_cmd = "#{bundler_path}bundler"
+          <<-INSTALL
+              #{test_serverspec_installed}
+              #{install_gemfile}
+              #{sudo_env(bundler_cmd)} install --gemfile=#{config[:default_path]}/Gemfile
+            #{fi_test_serverspec_installed}
+          INSTALL
+        else
+          if config[:test_serverspec_installed]
+            begin
+              require 'serverspec'
+              return
+            rescue LoadError
+              info("serverspec not installed installing ...")
+            end
+          end
+          if !config[:gemfile]
+            gemfile = "#{config[:default_path]}/Gemfile"
+            File.open(gemfile, "w") do |f|
+              f.write("source 'https://rubygems.org'\ngem 'net-ssh','~> 2.9.4'\ngem 'serverspec'")
+            end
+          end
+          gemfile = config[:gemfile] if config[:gemfile]
+          begin
+            system "bundler install --gemfile=#{gemfile}"
+          rescue
+            raise ActionFailed, "Serverspec install failed "
+          end
+        end
       end
 
       def install_gemfile
@@ -190,15 +230,26 @@ module Kitchen
 
       def env_vars
         return nil if config[:env_vars].none?
-        bash_vars = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
-        debug(bash_vars)
-        bash_vars
+        cmd = nil
+        if !config[:remote_exec] and RUBY_PLATFORM.index("mingw") != nil
+          cmd = config[:env_vars].map { |k, v| "set #{k}=#{v}" }.join(' && ')
+          cmd << ' &&' if cmd
+        else
+          cmd = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
+        end
+        debug(cmd)
+        cmd
       end
 
       def sudo_env(pm)
-        s = https_proxy ? "https_proxy=#{https_proxy}" : nil
-        p = http_proxy ? "http_proxy=#{http_proxy}" : nil
-        p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : sudo(pm).to_s
+        if config[:remote_exec]
+          s = https_proxy ? "https_proxy=#{https_proxy}" : nil
+          p = http_proxy ? "http_proxy=#{http_proxy}" : nil
+          p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : sudo(pm).to_s
+        else
+         # TODO: handle proxies
+         pm
+        end
       end
 
       def bundler_path
@@ -236,8 +287,9 @@ module Kitchen
         puts
       end
 
-      def shellout
-        cmd = Mixlib::ShellOut.new(config[:command], config[:shellout_opts])
+      def shellout(command)
+        info("Running command: #{command}")
+        cmd = Mixlib::ShellOut.new(command, config[:shellout_opts])
         cmd.live_stream = config[:live_stream]
         cmd.run_command
         begin
