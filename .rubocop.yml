@@ -20,3 +20,5 @@ MultilineOperationIndentation:
   Enabled: false
 RedundantFreeze:
   Enabled: false
+Style/BlockDelimiters:
+  Enabled: false

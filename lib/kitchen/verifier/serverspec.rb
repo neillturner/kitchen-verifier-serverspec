@@ -92,8 +92,7 @@ module Kitchen
             fi
             INSTALL
           end
-        else
-          if config[:serverspec_command]
+        elsif config[:serverspec_command]
             info("Running command: #{config[:serverspec_command]}")
             system config[:serverspec_command]
           else
@@ -151,6 +150,7 @@ module Kitchen
         end
       end
 
+      # rubocop:disable Metrics/PerceivedComplexity
       def install_serverspec
         if config[:remote_exec]
           bundler_cmd = "#{bundler_path}bundler"
@@ -166,12 +166,12 @@ module Kitchen
               require 'serverspec'
               return
             rescue LoadError
-              info("serverspec not installed installing ...")
+              info('serverspec not installed installing ...')
             end
           end
-          if !config[:gemfile]
+          unless config[:gemfile]
             gemfile = "#{config[:default_path]}/Gemfile"
-            File.open(gemfile, "w") do |f|
+            File.open(gemfile, 'w') do |f|
               f.write("source 'https://rubygems.org'\ngem 'net-ssh','~> 2.9.4'\ngem 'serverspec'")
             end
           end
@@ -179,7 +179,7 @@ module Kitchen
           begin
             system "bundler install --gemfile=#{gemfile}"
           rescue
-            raise ActionFailed, "Serverspec install failed "
+            raise ActionFailed, 'Serverspec install failed'
           end
         end
       end
@@ -249,8 +249,8 @@ module Kitchen
           p = http_proxy ? "http_proxy=#{http_proxy}" : nil
           p || s ? "#{sudo('env')} #{p} #{s} #{pm}" : sudo(pm).to_s
         else
-         # TODO: handle proxies
-         pm
+          # TODO: handle proxies
+          pm
         end
       end
 
