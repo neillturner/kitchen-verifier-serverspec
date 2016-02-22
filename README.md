@@ -6,9 +6,8 @@
 
 A Test Kitchen Serverspec Verifer without having to transit the Busser layer.
 
-This is a first version. Currently it only supports running serverspec remotely on the server. 
-It could be easily enhanced to run serverspec locally on your workstation. Also the installs 
-don't cover all the possible options yet.
+This supports running supports running serverspec but remotely on the server and locally on your workstation.
+In the next version runners will be supported to provide logic to run serverspec initially supporting ansiblespec.
 
 
 ## Installation
@@ -25,7 +24,8 @@ Or install it yourself as:
 
     $ gem install kitchen-verifier-serverspec
 
-When it runs it install serverspec on the remote server. This can be configured by passing a Gemfile like this: 
+When it runs it install serverspec on the remote server or the workstation if remote_exec set to false.
+This can be configured by passing a Gemfile like this:
 
 ```
 source 'https://rubygems.org'
@@ -34,7 +34,7 @@ gem 'net-ssh','~> 2.9'
 gem 'serverspec'
 ```
 
-this allows extra dependencies to be specified and the version of serverspec specified. 
+this allows extra dependencies to be specified and the version of serverspec specified.
 
 ## Usage
 
@@ -52,7 +52,7 @@ suites:
       - modules/mycompany_base/spec/acceptance/base_spec.rb
 ```
 
-See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_beaker_repo)
+See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_repo)
 
 or with environment variables
 
@@ -73,12 +73,34 @@ suites:
         SSH_KEY: 'spec/tomcat_private_key.pem'
 ```
 
+or run on your workstation
+
+```yaml
+verifier:
+  name: serverspec
+  remote_exec: false
+
+suites:
+  - name: base
+    provisioner:
+      custom_facts:
+        role_name1: base
+    verifier:
+      patterns:
+      - modules_mycompany/mycompany_base/spec/acceptance/base_local_spec.rb
+      env_vars:
+        TARGET_HOST: 127.0.0.1
+        TARGET_PORT: 2222
+        LOGIN_USER: vagrant
+        SSH_KEY: 'c:/repository/puppet_beaker_repo/private_key.pem'
+```
 
 # Serverspec Verifier Options
 
 key | default value | Notes
 ----|---------------|--------
 sleep | 0 |
+remote_exec | true | specify false to run serverspec on workstation
 serverspec_command | nil | custom command to run serverspec
 format | 'documentation' | format of serverspec output
 color | true | enable color in the output

@@ -233,12 +233,13 @@ module Kitchen
         cmd = nil
         if !config[:remote_exec]
           config[:env_vars].map { |k, v|
-            ENV[k]=v
+            info("Environment variable #{k} value #{v}")
+            ENV[k.to_s] = v.to_s
           }
         else
           cmd = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
+          debug(cmd)
         end
-        debug(cmd)
         cmd
       end
 
@@ -285,7 +286,6 @@ module Kitchen
           print '.'
           sleep 1
         end
-        puts
       end
 
       def shellout(command)
