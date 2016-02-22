@@ -309,6 +309,7 @@ module Kitchen
         end
         config[:shellout_opts].merge!(env_state)
       end
+
     end
   end
-#end
+end
