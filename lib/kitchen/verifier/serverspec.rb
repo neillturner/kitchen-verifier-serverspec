@@ -180,6 +180,7 @@ module Kitchen
           rescue
             raise ActionFailed, 'Serverspec install failed'
           end
+          nil
         end
       end
 
