@@ -17,7 +17,6 @@ require 'kitchen/verifier/base'
 module Kitchen
   module Verifier
     # Serverspec verifier for Kitchen.
-    #
     class Serverspec < Kitchen::Verifier::Base
       require 'mixlib/shellout'
 
@@ -312,4 +311,4 @@ module Kitchen
       end
     end
   end
-end
+#end
