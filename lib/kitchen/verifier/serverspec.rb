@@ -235,7 +235,6 @@ module Kitchen
           config[:env_vars].map { |k, v|
             ENV[k]=v
           }
-          cmd << ' &&' if cmd
         else
           cmd = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
         end
