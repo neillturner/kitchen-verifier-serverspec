@@ -231,8 +231,10 @@ module Kitchen
       def env_vars
         return nil if config[:env_vars].none?
         cmd = nil
-        if !config[:remote_exec] and RUBY_PLATFORM.index("mingw") != nil
-          cmd = config[:env_vars].map { |k, v| "set #{k}=#{v}" }.join(' && ')
+        if !config[:remote_exec]
+          config[:env_vars].map { |k, v|
+            ENV[k]=v
+          }
           cmd << ' &&' if cmd
         else
           cmd = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
