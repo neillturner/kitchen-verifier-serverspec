@@ -311,4 +311,3 @@ module Kitchen
       end
     end
   end
-end
