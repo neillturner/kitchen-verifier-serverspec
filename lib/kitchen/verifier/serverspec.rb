@@ -71,7 +71,7 @@ module Kitchen
         install_command
       end
 
-      #private
+      private
 
       def serverspec_commands
         if config[:remote_exec]
