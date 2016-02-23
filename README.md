@@ -92,7 +92,7 @@ suites:
         TARGET_HOST: 127.0.0.1
         TARGET_PORT: 2222
         LOGIN_USER: vagrant
-        SSH_KEY: 'c:/repository/puppet_beaker_repo/private_key.pem'
+        SSH_KEY: 'c:/repository/puppet_repo/private_key.pem'
 ```
 
 # Serverspec Verifier Options
