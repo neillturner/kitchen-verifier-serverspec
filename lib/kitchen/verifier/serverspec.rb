@@ -148,6 +148,7 @@ module Kitchen
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def install_serverspec
         if config[:remote_exec]
           bundler_cmd = "#{bundler_path}bundler"
