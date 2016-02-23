@@ -92,13 +92,12 @@ module Kitchen
             INSTALL
           end
         elsif config[:serverspec_command]
-            info("Running command: #{config[:serverspec_command]}")
-            system config[:serverspec_command]
-          else
-            x = rspec_commands
-            info("Running command: #{x}")
-            system x
-          end
+          info("Running command: #{config[:serverspec_command]}")
+          system config[:serverspec_command]
+        else
+          c = rspec_commands
+          info("Running command: #{c}")
+          system c
         end
       end
 
@@ -311,3 +310,4 @@ module Kitchen
       end
     end
   end
+end
