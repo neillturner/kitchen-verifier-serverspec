@@ -52,7 +52,7 @@ suites:
       - modules/mycompany_base/spec/acceptance/base_spec.rb
 ```
 
-See example [https://github.com/neillturner/puppet_beaker_repo](https://github.com/neillturner/puppet_repo)
+See example [https://github.com/neillturner/puppet_repo](https://github.com/neillturner/puppet_repo)
 
 or with environment variables
 
