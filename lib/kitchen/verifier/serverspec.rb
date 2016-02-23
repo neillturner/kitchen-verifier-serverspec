@@ -231,10 +231,10 @@ module Kitchen
         return nil if config[:env_vars].none?
         cmd = nil
         if !config[:remote_exec]
-          config[:env_vars].map { |k, v|
+          config[:env_vars].map do |k, v|
             info("Environment variable #{k} value #{v}")
             ENV[k.to_s] = v.to_s
-          }
+          end
         else
           cmd = config[:env_vars].map { |k, v| "#{k}=#{v}" }.join(' ')
           debug(cmd)
@@ -309,7 +309,6 @@ module Kitchen
         end
         config[:shellout_opts].merge!(env_state)
       end
-
     end
   end
 end
