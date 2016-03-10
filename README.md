@@ -101,7 +101,7 @@ Custon runners can be defined and run to provide further customization.
 There is a runner that automatically runs the ansiblespec files for all the hosts from the 
 ansible provisioner. 
 
-This can be run by specifying in the kitchan yml file: 
+This can be run by specifying in the kitchen yml file:
 
 ```yaml
 verifier:
