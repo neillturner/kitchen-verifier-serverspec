@@ -42,7 +42,7 @@ module Kitchen
       default_config :bundle_path, nil
       default_config :rspec_path,  nil
       default_config :require_runner, false
-      default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'      
+      default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
 
       # (see Base#call)
       def call(state)
@@ -152,18 +152,18 @@ module Kitchen
         end
       end
       
-      def install_runner 
+      def install_runner
         if config[:require_runner]
           if config[:remote_exec]
             <<-INSTALL
               if [ ! -f #{config[:default_path]}/#{runner_filename} ]; then
-                #{sudo_env('curl')} -o #{config[:default_path]}/#{runner_filename} #{config[:runner_url]} 
+                #{sudo_env('curl')} -o #{config[:default_path]}/#{runner_filename} #{config[:runner_url]}
               fi
             INSTALL
           else
             raise ActionFailed, 'Serverspec Runners only for remote execution'
-          end      
-        end 
+          end
+        end
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -243,14 +243,14 @@ module Kitchen
         info('Running Serverspec')
         if config[:require_runner]
           "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
-        else 
+        else
           config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join('\n')
         end
       end
 
-      def rspec_cmd 
-        config[:require_runner] ? "ruby #{config[:default_path]}/#{runner_filename}" :  "#{rspec_path}rspec"
-      end   
+      def rspec_cmd
+        config[:require_runner] ? "ruby #{config[:default_path]}/#{runner_filename}" : "#{rspec_path}rspec"
+      end
 
       def env_vars
         return nil if config[:env_vars].none?
