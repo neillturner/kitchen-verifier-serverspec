@@ -151,7 +151,7 @@ module Kitchen
           end
         end
       end
-      
+
       def install_runner
         if config[:require_runner]
           if config[:remote_exec]
@@ -285,11 +285,11 @@ module Kitchen
       def rspec_path
         config[:rspec_path] ? "#{config[:rspec_path]}/" : nil
       end
-      
+
       def rspec_path_option
         config[:rspec_path] ? "--rspec-path #{config[:rspec_path]}/" : nil
       end
-      
+
       def runner_filename
         File.basename(config[:runner_url])
       end
