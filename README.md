@@ -95,6 +95,31 @@ suites:
         SSH_KEY: 'c:/repository/puppet_repo/private_key.pem'
 ```
 
+# Custom Runners
+
+Custon runners can be defined and run tp provide further customization. 
+There is a runner that automatically runs the ansiblespec files for all the hosts from the 
+ansible provisioner. 
+This can be run by specifying in the kitchan yml file: 
+
+```yaml
+verifier:
+  name: serverspec
+
+suites:
+  - name: base
+    verifier:
+      runner_url: https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb
+      require_runner: true
+      bundler_path: '/usr/local/bin'
+      rspec_path: '/home/vagrant/bin'
+      env_vars:
+        TARGET_HOST: 172.28.128.7
+        LOGIN_USER: vagrant
+        SSH_KEY: 'spec/tomcat_private_key.pem'
+```
+
+
 # Serverspec Verifier Options
 
 key | default value | Notes
@@ -117,7 +142,8 @@ sudo | nil | use sudo to run commands
 env_vars | {} | environment variable to set for rspec
 bundle_path | nil | path for bundler command
 rspec_path | nil | path for rspec command
-
+runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner 
+require_runner | false | run the custom runner instead of rspec directly 
 
 ## Contributing
 

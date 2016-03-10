@@ -41,6 +41,8 @@ module Kitchen
       default_config :env_vars, {}
       default_config :bundle_path, nil
       default_config :rspec_path,  nil
+      default_config :require_runner, false
+      default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'      
 
       # (see Base#call)
       def call(state)
@@ -120,6 +122,7 @@ module Kitchen
             #{install_bundler}
             if [ -d #{config[:default_path]} ]; then
               #{install_serverspec}
+              #{install_runner}
             else
               echo "ERROR: Default path '#{config[:default_path]}' does not exist"
               exit 1
@@ -129,6 +132,7 @@ module Kitchen
           info('Installing bundler and serverspec')
           install_bundler
           install_serverspec
+          install_runner
         end
       end
 
@@ -146,6 +150,20 @@ module Kitchen
             system `gem install --no-ri --no-rdoc  bundler`
           end
         end
+      end
+      
+      def install_runner 
+        if config[:require_runner]
+          if config[:remote_exec]
+            <<-INSTALL
+              if [ ! -f #{config[:default_path]}/#{runner_filename} ]; then
+                #{sudo_env('curl')} -o #{config[:default_path]}/#{runner_filename} #{config[:runner_url]} 
+              fi
+            INSTALL
+          else
+            raise ActionFailed, 'Serverspec Runners only for remote execution'
+          end      
+        end 
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -222,10 +240,17 @@ module Kitchen
       end
 
       def rspec_commands
-        rspec_cmd = "#{rspec_path}rspec"
         info('Running Serverspec')
-        config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join('\n')
+        if config[:require_runner]
+          "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
+        else 
+          config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join('\n')
+        end
       end
+
+      def rspec_cmd 
+        config[:require_runner] ? "ruby #{config[:default_path]}/#{runner_filename}" :  "#{rspec_path}rspec"
+      end   
 
       def env_vars
         return nil if config[:env_vars].none?
@@ -259,6 +284,14 @@ module Kitchen
 
       def rspec_path
         config[:rspec_path] ? "#{config[:rspec_path]}/" : nil
+      end
+      
+      def rspec_path_option
+        config[:rspec_path] ? "--rspec-path #{config[:rspec_path]}/" : nil
+      end
+      
+      def runner_filename
+        File.basename(config[:runner_url])
       end
 
       def http_proxy
