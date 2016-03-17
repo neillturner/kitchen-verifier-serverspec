@@ -6,8 +6,8 @@
 
 A Test Kitchen Serverspec Verifer without having to transit the Busser layer.
 
-This supports running supports running serverspec but remotely on the server and locally on your workstation.
-In the next version runners will be supported to provide logic to run serverspec initially supporting ansiblespec.
+This supports running serverspec both remotely on the server and locally on your workstation.
+Runners are supported to provide logic to run serverspec initially supporting ansiblespec.
 
 
 ## Installation
