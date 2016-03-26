@@ -34,12 +34,12 @@ module Kitchen
       default_config :default_path, '/tmp/kitchen'
       default_config :patterns, []
       default_config :gemfile, nil
-      default_config :install_commmand, 'bundle install'
+      default_config :custom_install_command, nil
       default_config :test_serverspec_installed, true
       default_config :extra_flags, nil
       default_config :remove_default_path, false
       default_config :env_vars, {}
-      default_config :bundle_path, nil
+      default_config :bundler_path, nil
       default_config :rspec_path,  nil
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
@@ -73,7 +73,7 @@ module Kitchen
         install_command
       end
 
-      private
+      #private
 
       def serverspec_commands
         if config[:remote_exec]
@@ -104,8 +104,10 @@ module Kitchen
       end
 
       def install_command
+        info('Installing with custom install command') if config[:custom_install_command]
+        return config[:custom_install_command] if config[:custom_install_command]
         if config[:remote_exec]
-          info('Installing ruby, bundler and serverspec')
+          info('Installing ruby, bundler and serverspec remotely on server')
           <<-INSTALL
             if [ ! $(which ruby) ]; then
               echo '-----> Installing ruby, will try to determine platform os'
@@ -129,7 +131,7 @@ module Kitchen
             fi
           INSTALL
         else
-          info('Installing bundler and serverspec')
+          info('Installing bundler and serverspec locally on workstation')
           install_bundler
           install_serverspec
           install_runner
@@ -168,8 +170,8 @@ module Kitchen
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def install_serverspec
+        bundler_cmd = "#{bundler_path}bundler"
         if config[:remote_exec]
-          bundler_cmd = "#{bundler_path}bundler"
           <<-INSTALL
               #{test_serverspec_installed}
               #{install_gemfile}
@@ -193,7 +195,7 @@ module Kitchen
           end
           gemfile = config[:gemfile] if config[:gemfile]
           begin
-            system "bundler install --gemfile=#{gemfile}"
+            system "#{bundler_cmd} install --gemfile=#{gemfile}"
           rescue
             raise ActionFailed, 'Serverspec install failed'
           end

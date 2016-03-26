@@ -97,9 +97,9 @@ suites:
 
 # Custom Runners
 
-Custon runners can be defined and run to provide further customization. 
-There is a runner that automatically runs the ansiblespec files for all the hosts from the 
-ansible provisioner. 
+Custon runners can be defined and run to provide further customization.
+There is a runner that automatically runs the ansiblespec files for all the hosts from the
+ansible provisioner.
 
 This can be run by specifying in the kitchen yml file:
 
@@ -133,7 +133,7 @@ color | true | enable color in the output
 default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
 patterns | [] | array of patterns for spec test files
 gemfile | nil | custom gemfile to use to install serverspec
-install_commmand | 'bundle install' | command to install serverspec
+custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
 test_serverspec_installed | true | only run install_command if serverspec not installed
 extra_flags | nil | extra flags to add to ther serverspec command
 remove_default_path | false | remove the default_path after successful serverspec run
@@ -141,10 +141,29 @@ http_proxy | nil | use http proxy when installing ruby, serverspec and running s
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
 sudo | nil | use sudo to run commands
 env_vars | {} | environment variable to set for rspec
-bundle_path | nil | path for bundler command
+bundler_path | nil | path for bundler command
 rspec_path | nil | path for rspec command
-runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner 
-require_runner | false | run the custom runner instead of rspec directly 
+runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
+require_runner | false | run the custom runner instead of rspec directly
+
+#### custom_install_command example usage
+
+* One liner
+```yaml
+    custom_install_command: yum install -y git
+```
+* Multiple lines, a.k.a embed shell script
+```yaml
+  custom_install_command: |
+     command1
+     command2
+```
+* Multiple lines join without new line
+```yaml
+  custom_install_command: >
+     command1 &&
+     command2
+```
 
 ## Contributing
 
