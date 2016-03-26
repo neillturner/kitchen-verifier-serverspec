@@ -40,7 +40,7 @@ module Kitchen
       default_config :remove_default_path, false
       default_config :env_vars, {}
       default_config :bundler_path, nil
-      default_config :rspec_path,  nil
+      default_config :rspec_path, nil
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
 
@@ -72,8 +72,6 @@ module Kitchen
         sleep_if_set
         install_command
       end
-
-      #private
 
       def serverspec_commands
         if config[:remote_exec]
@@ -137,6 +135,8 @@ module Kitchen
           install_runner
         end
       end
+
+      # private
 
       def install_bundler
         if config[:remote_exec]
