@@ -127,13 +127,15 @@ key | default value | Notes
 ----|---------------|--------
 sleep | 0 |
 remote_exec | true | specify false to run serverspec on workstation
-serverspec_command | nil | custom command to run serverspec
+custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
+additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
 format | 'documentation' | format of serverspec output
 color | true | enable color in the output
 default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
 patterns | [] | array of patterns for spec test files
 gemfile | nil | custom gemfile to use to install serverspec
 custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
+additional_install_commmand | nil | Additional shell command to be used at install stage. Can be multiline. See examples below.
 test_serverspec_installed | true | only run install_command if serverspec not installed
 extra_flags | nil | extra flags to add to ther serverspec command
 remove_default_path | false | remove the default_path after successful serverspec run

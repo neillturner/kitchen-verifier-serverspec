@@ -26,6 +26,8 @@ module Kitchen
 
       default_config :sleep, 0
       default_config :serverspec_command, nil
+      default_config :custom_serverspec_command, nil
+      default_config :additional_serverspec_command, nil
       default_config :shellout_opts, {}
       default_config :live_stream, $stdout
       default_config :remote_exec, true
@@ -35,6 +37,7 @@ module Kitchen
       default_config :patterns, []
       default_config :gemfile, nil
       default_config :custom_install_command, nil
+      default_config :additional_install_command, nil
       default_config :test_serverspec_installed, true
       default_config :extra_flags, nil
       default_config :remove_default_path, false
@@ -75,12 +78,13 @@ module Kitchen
 
       def serverspec_commands
         if config[:remote_exec]
-          if config[:serverspec_command]
+          if custom_serverspec_command
             <<-INSTALL
-            #{config[:serverspec_command]}
+            #{custom_serverspec_command}
             INSTALL
           else
             <<-INSTALL
+            #{config[:additional_serverspec_command]}
             if [ -d #{config[:default_path]} ]; then
               cd #{config[:default_path]}
               #{rspec_commands}
@@ -91,10 +95,15 @@ module Kitchen
             fi
             INSTALL
           end
-        elsif config[:serverspec_command]
-          info("Running command: #{config[:serverspec_command]}")
-          system config[:serverspec_command]
+        elsif custom_serverspec_command
+          info("Running command: #{custom_serverspec_command}")
+          system custom_serverspec_command
         else
+          if #{config[:additional_serverspec_command]}
+            c = config[:additional_serverspec_command]
+            info("Running command: #{c}")
+            system c
+          end
           c = rspec_commands
           info("Running command: #{c}")
           system c
@@ -107,6 +116,7 @@ module Kitchen
         if config[:remote_exec]
           info('Installing ruby, bundler and serverspec remotely on server')
           <<-INSTALL
+            #{config[:additional_install_command]}
             if [ ! $(which ruby) ]; then
               echo '-----> Installing ruby, will try to determine platform os'
               if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
@@ -130,6 +140,11 @@ module Kitchen
           INSTALL
         else
           info('Installing bundler and serverspec locally on workstation')
+          if #{config[:additional_install_command]}
+            c = config[:additional_install_command]
+            info("Running command: #{c}")
+            system c
+          end
           install_bundler
           install_serverspec
           install_runner
@@ -278,6 +293,11 @@ module Kitchen
           # TODO: handle proxies
           pm
         end
+      end
+
+      def custom_serverspec_command
+       return config[:custom_serverspec_command] if config[:custom_serverspec_command]
+       return config[:serverspec_command]
       end
 
       def bundler_path
