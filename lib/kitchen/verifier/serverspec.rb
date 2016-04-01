@@ -99,7 +99,7 @@ module Kitchen
           info("Running command: #{custom_serverspec_command}")
           system custom_serverspec_command
         else
-          if #{config[:additional_serverspec_command]}
+          if config[:additional_serverspec_command]
             c = config[:additional_serverspec_command]
             info("Running command: #{c}")
             system c
@@ -140,7 +140,7 @@ module Kitchen
           INSTALL
         else
           info('Installing bundler and serverspec locally on workstation')
-          if #{config[:additional_install_command]}
+          if config[:additional_install_command]
             c = config[:additional_install_command]
             info("Running command: #{c}")
             system c
@@ -296,8 +296,8 @@ module Kitchen
       end
 
       def custom_serverspec_command
-       return config[:custom_serverspec_command] if config[:custom_serverspec_command]
-       return config[:serverspec_command]
+        return config[:custom_serverspec_command] if config[:custom_serverspec_command]
+        config[:serverspec_command]
       end
 
       def bundler_path
