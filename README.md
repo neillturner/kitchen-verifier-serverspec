@@ -143,7 +143,7 @@ http_proxy | nil | use http proxy when installing ruby, serverspec and running s
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
 sudo | nil | use sudo to run commands
 env_vars | {} | environment variable to set for rspec
-bundler_path | nil | path for bundler command
+bundler_path | '/usr/local/bin' | path for bundler command
 rspec_path | nil | path for rspec command
 runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
 require_runner | false | run the custom runner instead of rspec directly
