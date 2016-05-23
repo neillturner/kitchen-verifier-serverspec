@@ -42,7 +42,7 @@ module Kitchen
       default_config :remove_default_path, false
       default_config :env_vars, {}
       default_config :bundler_path, '/usr/local/bin'
-      default_config :rspec_path, nil
+      default_config :rspec_path, '/usr/local/bin'
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
 
