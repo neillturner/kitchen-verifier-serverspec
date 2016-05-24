@@ -47,7 +47,6 @@ module Kitchen
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
 
-
       # (see Base#call)
       def call(state)
         info("[#{name}] Verify on instance=#{instance} with state=#{state}")
