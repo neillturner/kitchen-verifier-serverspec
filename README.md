@@ -38,6 +38,14 @@ this allows extra dependencies to be specified and the version of serverspec spe
 
 ## Usage
 
+There are three ways to run verifier serverspec:
+  * Remotely directly on the server running serverspec in exec mode
+  * Remotely directly on the server running serverspec in ssh mode
+  * Locally on your workstation running serverspec in ssh mode
+
+## Remotely directly on server running serverspec in exec mode
+
+This allow testing directly on the server. Typicaly used in conjunction with ansible using local connection.
 
 An example of the verifier serverspec options in your `.kitchen.yml` file:
 
@@ -54,7 +62,32 @@ suites:
 
 See example [https://github.com/neillturner/puppet_repo](https://github.com/neillturner/puppet_repo)
 
-or with environment variables
+```yaml
+verifier:
+  name: serverspec
+
+suites:
+  - name: base
+    verifier:
+      patterns:
+      - roles/tomcat/spec/tomcat_spec.rb
+      bundler_path: '/usr/local/bin'
+      rspec_path: '/usr/local/bin'
+```
+
+See example [https://github.com/neillturner/ansible_repo](https://github.com/neillturner/ansible_repo)
+
+The spec/spec_helper.rb should contain
+
+```
+require 'serverspec'
+set :backend, :exec
+```
+
+
+## Remotely directly on the server running serverspec in ssh mode
+
+This allow testing of multiple remote servers. Typicaly used in conjunction with ansible using ssh connection.
 
 ```yaml
 verifier:
@@ -73,7 +106,31 @@ suites:
         SSH_KEY: 'spec/tomcat_private_key.pem'
 ```
 
-or run on your workstation
+The spec/spec_helper.rb should contain
+
+```
+require 'rubygems'
+require 'bundler/setup'
+
+require 'serverspec'
+require 'pathname'
+require 'net/ssh'
+
+RSpec.configure do |config|
+  set :host,  ENV['TARGET_HOST']
+  # ssh options at http://net-ssh.github.io/ssh/v1/chapter-2.html
+  # ssh via password, set :version to :debug for debugging
+  #set :ssh_options, :user => ENV['LOGIN_USER'], :paranoid => false, :verbose => :info, :password => ENV['LOGIN_PASSWORD'] if ENV['LOGIN_PASSWORD']
+  # ssh via ssh key
+  set :ssh_options, :user => ENV['LOGIN_USER'], :paranoid => false, :verbose => :error, :host_key => 'ssh-rsa', :keys => [ ENV['SSH_KEY'] ] if ENV['SSH_KEY']
+  set :backend, :ssh
+  set :request_pty, true
+end
+```
+
+## Locally on your workstation running serverspec in ssh mode
+
+This allows you not to have to install ruby and serverspec on the server being configured as serverspec is run on your workstation in ssh mode.
 
 ```yaml
 verifier:
@@ -94,6 +151,29 @@ suites:
         LOGIN_USER: vagrant
         SSH_KEY: 'c:/repository/puppet_repo/private_key.pem'
 ```
+
+The spec/spec_helper.rb should contain
+
+```
+require 'rubygems'
+require 'bundler/setup'
+
+require 'serverspec'
+require 'pathname'
+require 'net/ssh'
+
+RSpec.configure do |config|
+  set :host,  ENV['TARGET_HOST']
+  # ssh options at http://net-ssh.github.io/ssh/v1/chapter-2.html
+  # ssh via password, set :version to :debug for debugging
+  #set :ssh_options, :user => ENV['LOGIN_USER'], :paranoid => false, :verbose => :info, :password => ENV['LOGIN_PASSWORD'] if ENV['LOGIN_PASSWORD']
+  # ssh via ssh key
+  set :ssh_options, :user => ENV['LOGIN_USER'], :paranoid => false, :verbose => :error, :host_key => 'ssh-rsa', :keys => [ ENV['SSH_KEY'] ] if ENV['SSH_KEY']
+  set :backend, :ssh
+  set :request_pty, true
+end
+```
+
 
 # Custom Runners
 
@@ -142,6 +222,7 @@ remove_default_path | false | remove the default_path after successful serverspe
 http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
 sudo | nil | use sudo to run commands
+sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
 env_vars | {} | environment variable to set for rspec
 bundler_path | nil | path for bundler command
 rspec_path | nil | path for rspec command

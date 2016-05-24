@@ -30,6 +30,7 @@ module Kitchen
       default_config :shellout_opts, {}
       default_config :live_stream, $stdout
       default_config :remote_exec, true
+      default_config :sudo_command, 'sudo -E -H'
       default_config :format, 'documentation'
       default_config :color, true
       default_config :default_path, '/tmp/kitchen'
@@ -45,6 +46,7 @@ module Kitchen
       default_config :rspec_path, nil
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
+
 
       # (see Base#call)
       def call(state)
@@ -184,7 +186,7 @@ module Kitchen
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def install_serverspec
-        bundler_cmd = "#{bundler_path}bundler"
+        bundler_cmd = "#{bundler_path}bundle"
         if config[:remote_exec]
           <<-INSTALL
               #{test_serverspec_installed}
