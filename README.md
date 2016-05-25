@@ -43,6 +43,12 @@ There are three ways to run verifier serverspec:
   * Remotely directly on the server running serverspec in ssh mode
   * Locally on your workstation running serverspec in ssh mode
 
+Verifier Serverspec allows the serverspec files to be anywhere in the repository.This means that you can use spec files that follow ansiblespec or puppet beaker locations. 
+
+*NOTE* Verfier Serverspec does not copy the the serverspec files. They are assumed to be there in the repository and to have been copied to the server via the provisioner. This means if you change a spec file you need to run converge again to get the spec files copied to the server. Verifier Serverspec doesn't copy spec files in the test/integration directory like the busser serverspec that is supplied by chef.  
+  
+
+
 ## Remotely directly on server running serverspec in exec mode
 
 This allow testing directly on the server. Typicaly used in conjunction with ansible using local connection.
