@@ -45,7 +45,7 @@ There are three ways to run verifier serverspec:
 
 Verifier Serverspec allows the serverspec files to be anywhere in the repository.This means that you can use spec files that follow ansiblespec or puppet beaker locations. 
 
-### Spec File LOcation
+### Spec File Location and Updating
 
 Verfier Serverspec does not copy the the serverspec files. They are assumed to be there in the repository and to have been copied to the server via the provisioner. This means if you change a spec file you need to run converge again to get the spec files copied to the server. Verifier Serverspec doesn't copy spec files in the test/integration directory like the busser serverspec that is supplied by chef.  
   
