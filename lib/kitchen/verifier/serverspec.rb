@@ -42,8 +42,8 @@ module Kitchen
       default_config :extra_flags, nil
       default_config :remove_default_path, false
       default_config :env_vars, {}
-      default_config :bundler_path, '/usr/local/bin'
-      default_config :rspec_path, '/usr/local/bin'
+      default_config :bundler_path, nil
+      default_config :rspec_path, nil
       default_config :require_runner, false
       default_config :runner_url, 'https://raw.githubusercontent.com/neillturner/serverspec-runners/master/ansiblespec_runner.rb'
 
@@ -87,6 +87,8 @@ module Kitchen
             #{config[:additional_serverspec_command]}
             if [ -d #{config[:default_path]} ]; then
               cd #{config[:default_path]}
+              RSPEC_CMD=#{rspec_cmd}
+              echo $RSPEC_CMD
               #{rspec_commands}
               #{remove_default_path}
             else
@@ -185,12 +187,13 @@ module Kitchen
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def install_serverspec
-        bundler_cmd = "#{bundler_path}bundle"
         if config[:remote_exec]
           <<-INSTALL
               #{test_serverspec_installed}
               #{install_gemfile}
-              #{sudo_env(bundler_cmd)} install --gemfile=#{config[:default_path]}/Gemfile
+              BUNDLE_CMD=#{bundler_cmd}
+              echo $BUNDLE_CMD
+              #{sudo_env('')} $BUNDLE_CMD install --gemfile=#{config[:default_path]}/Gemfile
             #{fi_test_serverspec_installed}
           INSTALL
         else
@@ -210,7 +213,7 @@ module Kitchen
           end
           gemfile = config[:gemfile] if config[:gemfile]
           begin
-            system "#{bundler_cmd} install --gemfile=#{gemfile}"
+            system "#{bundler_local_cmd} install --gemfile=#{gemfile}"
           rescue
             raise ActionFailed, 'Serverspec install failed'
           end
@@ -260,6 +263,8 @@ module Kitchen
         info('Running Serverspec')
         if config[:require_runner]
           "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
+        elsif config[:remote_exec]
+          config[:patterns].map { |s| "#{env_vars} #{sudo_env('')} $RSPEC_CMD #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join(';')
         else
           config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join(';')
         end
@@ -300,9 +305,17 @@ module Kitchen
         config[:serverspec_command]
       end
 
-      def bundler_path
-        config[:bundler_path] ? "#{config[:bundler_path]}/" : nil
+      def bundler_cmd
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : "$(which bundle)"
       end
+
+      def bundler_local_cmd
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : "bundle"
+      end
+
+      def rspec_cmd
+         config[:rspec_path] ? "#{config[:rspec_path]}/rspec" : "$(which rspec)"
+       end
 
       def rspec_path
         config[:rspec_path] ? "#{config[:rspec_path]}/" : nil
