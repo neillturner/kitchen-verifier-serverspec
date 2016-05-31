@@ -87,7 +87,7 @@ module Kitchen
             #{config[:additional_serverspec_command]}
             if [ -d #{config[:default_path]} ]; then
               cd #{config[:default_path]}
-              RSPEC_CMD=#{rspec_cmd}
+              RSPEC_CMD=#{rspec_bash_cmd}
               echo $RSPEC_CMD
               #{rspec_commands}
               #{remove_default_path}
@@ -306,16 +306,16 @@ module Kitchen
       end
 
       def bundler_cmd
-        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : "$(which bundle)"
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : '$(which bundle)'
       end
 
       def bundler_local_cmd
-        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : "bundle"
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : 'bundle'
       end
 
-      def rspec_cmd
-         config[:rspec_path] ? "#{config[:rspec_path]}/rspec" : "$(which rspec)"
-       end
+      def rspec_bash_cmd
+        config[:rspec_path] ? "#{config[:rspec_path]}/rspec" : '$(which rspec)'
+      end
 
       def rspec_path
         config[:rspec_path] ? "#{config[:rspec_path]}/" : nil
