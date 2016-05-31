@@ -36,6 +36,34 @@ gem 'serverspec'
 
 this allows extra dependencies to be specified and the version of serverspec specified.
 
+# Serverspec Verifier Options
+
+key | default value | Notes
+----|---------------|--------
+sleep | 0 |
+remote_exec | true | specify false to run serverspec on workstation
+custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
+additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
+format | 'documentation' | format of serverspec output
+color | true | enable color in the output
+default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
+patterns | [] | array of patterns for spec test files
+gemfile | nil | custom gemfile to use to install serverspec
+custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
+additional_install_commmand | nil | Additional shell command to be used at install stage. Can be multiline. See examples below.
+test_serverspec_installed | true | only run install_command if serverspec not installed
+extra_flags | nil | extra flags to add to ther serverspec command
+remove_default_path | false | remove the default_path after successful serverspec run
+http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
+https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
+sudo | nil | use sudo to run commands
+sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
+env_vars | {} | environment variable to set for rspec
+bundler_path | | override path for bundler command
+rspec_path | | override path for rspec command
+runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
+require_runner | false | run the custom runner instead of rspec directly
+
 ## Usage
 
 There are three ways to run verifier serverspec:
@@ -43,12 +71,12 @@ There are three ways to run verifier serverspec:
   * Remotely directly on the server running serverspec in ssh mode
   * Locally on your workstation running serverspec in ssh mode
 
-Verifier Serverspec allows the serverspec files to be anywhere in the repository.This means that you can use spec files that follow ansiblespec or puppet beaker locations. 
+Verifier Serverspec allows the serverspec files to be anywhere in the repository.This means that you can use spec files that follow ansiblespec or puppet beaker locations.
 
 ### Spec File Location and Updating
 
-Verfier Serverspec does not copy the the serverspec files. They are assumed to be there in the repository and to have been copied to the server via the provisioner. This means if you change a spec file you need to run converge again to get the spec files copied to the server. Verifier Serverspec doesn't copy spec files in the test/integration directory like the busser serverspec that is supplied by chef.  
-  
+Verfier Serverspec does not copy the the serverspec files. They are assumed to be there in the repository and to have been copied to the server via the provisioner. This means if you change a spec file you need to run converge again to get the spec files copied to the server. Verifier Serverspec doesn't copy spec files in the test/integration directory like the busser serverspec that is supplied by chef.
+
 
 
 ## Remotely directly on server running serverspec in exec mode
@@ -207,35 +235,6 @@ suites:
         LOGIN_USER: vagrant
         SSH_KEY: 'spec/tomcat_private_key.pem'
 ```
-
-
-# Serverspec Verifier Options
-
-key | default value | Notes
-----|---------------|--------
-sleep | 0 |
-remote_exec | true | specify false to run serverspec on workstation
-custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
-additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
-format | 'documentation' | format of serverspec output
-color | true | enable color in the output
-default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
-patterns | [] | array of patterns for spec test files
-gemfile | nil | custom gemfile to use to install serverspec
-custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
-additional_install_commmand | nil | Additional shell command to be used at install stage. Can be multiline. See examples below.
-test_serverspec_installed | true | only run install_command if serverspec not installed
-extra_flags | nil | extra flags to add to ther serverspec command
-remove_default_path | false | remove the default_path after successful serverspec run
-http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
-https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
-sudo | nil | use sudo to run commands
-sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
-env_vars | {} | environment variable to set for rspec
-bundler_path | '/usr/local/bin' | path for bundler command
-rspec_path | '/usr/local/bin' | path for rspec command
-runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
-require_runner | false | run the custom runner instead of rspec directly
 
 #### custom_install_command example usage
 
