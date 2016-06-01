@@ -98,17 +98,14 @@ module Kitchen
             INSTALL
           end
         elsif custom_serverspec_command
-          info("Running command: #{custom_serverspec_command}")
-          system custom_serverspec_command
+          shellout custom_serverspec_command
         else
           if config[:additional_serverspec_command]
             c = config[:additional_serverspec_command]
-            info("Running command: #{c}")
-            system c
+            shellout c
           end
           c = rspec_commands
-          info("Running command: #{c}")
-          system c
+          shellout c
         end
       end
 
@@ -144,8 +141,7 @@ module Kitchen
           info('Installing bundler and serverspec locally on workstation')
           if config[:additional_install_command]
             c = config[:additional_install_command]
-            info("Running command: #{c}")
-            system c
+            shellout c
           end
           install_bundler
           install_serverspec
@@ -166,7 +162,7 @@ module Kitchen
           begin
             require 'bundler'
           rescue LoadError
-            system `gem install --no-ri --no-rdoc  bundler`
+            shellout `gem install --no-ri --no-rdoc  bundler`
           end
         end
       end
@@ -213,7 +209,7 @@ module Kitchen
           end
           gemfile = config[:gemfile] if config[:gemfile]
           begin
-            system "#{bundler_local_cmd} install --gemfile=#{gemfile}"
+            shellout "#{bundler_local_cmd} install --gemfile=#{gemfile}"
           rescue
             raise ActionFailed, 'Serverspec install failed'
           end
@@ -363,7 +359,7 @@ module Kitchen
         begin
           cmd.error!
         rescue Mixlib::ShellOut::ShellCommandFailed
-          raise ActionFailed, "Action #verify failed for #{instance.to_str}."
+          raise ActionFailed, "Command #{command.inspect} failed for #{instance.to_str}"
         end
       end
 
@@ -373,7 +369,7 @@ module Kitchen
         env_state[:environment]['KITCHEN_PLATFORM'] = instance.platform.name
         env_state[:environment]['KITCHEN_SUITE'] = instance.suite.name
         state.each_pair do |key, value|
-          env_state[:environment]['KITCHEN_' + key.to_s.upcase] = value
+          env_state[:environment]['KITCHEN_' + key.to_s.upcase] = value.to_s
           ENV['KITCHEN_' + key.to_s.upcase] = value.to_s
           info("Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
         end
