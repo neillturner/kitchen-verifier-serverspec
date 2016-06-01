@@ -58,7 +58,7 @@ http_proxy | nil | use http proxy when installing ruby, serverspec and running s
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
 sudo | nil | use sudo to run commands
 sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
-env_vars | {} | environment variable to set for rspec
+env_vars | {} | environment variable to set for rspec and can be used in the spec_helper. It will automatically pickup any environment variables set with a KITCHEN_ prefix.
 bundler_path | | override path for bundler command
 rspec_path | | override path for rspec command
 runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
