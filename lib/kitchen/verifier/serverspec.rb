@@ -374,6 +374,8 @@ module Kitchen
         env_state[:environment]['KITCHEN_SUITE'] = instance.suite.name
         state.each_pair do |key, value|
           env_state[:environment]['KITCHEN_' + key.to_s.upcase] = value
+          ENV['KITCHEN_' + key.to_s.upcase] = value.to_s
+          info("Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
         end
         config[:shellout_opts].merge!(env_state)
       end
