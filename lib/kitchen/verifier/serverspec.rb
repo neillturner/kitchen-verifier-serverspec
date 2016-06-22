@@ -85,16 +85,12 @@ module Kitchen
           else
             <<-INSTALL
             #{config[:additional_serverspec_command]}
-            if [ -d #{config[:default_path]} ]; then
-              cd #{config[:default_path]}
-              RSPEC_CMD=#{rspec_bash_cmd}
-              echo $RSPEC_CMD
-              #{rspec_commands}
-              #{remove_default_path}
-            else
-              echo "ERROR: Default path '#{config[:default_path]}' does not exist"
-              exit 1
-            fi
+            mkdir -p #{config[:default_path]}
+            cd #{config[:default_path]}
+            RSPEC_CMD=#{rspec_bash_cmd}
+            echo $RSPEC_CMD
+            #{rspec_commands}
+            #{remove_default_path}
             INSTALL
           end
         elsif custom_serverspec_command
