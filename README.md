@@ -66,7 +66,7 @@ test_serverspec_installed | true | only run install_command if serverspec not in
 
 ## Tips
 
-If you get errors like 'Bundler installed as root, can't be found' then you will need to set the paths. Its hard to get thedefault paths correct when ruby maybe installed in a different user.
+If you get errors like 'Bundler installed as root, can't be found' then you will need to set the paths. Its hard to get the default paths correct when ruby maybe installed in a different user.
 ```
 bundler_path: '/usr/local/bin'
 rspec_path: '/usr/local/bin'
