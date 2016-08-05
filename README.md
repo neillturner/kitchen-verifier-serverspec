@@ -40,7 +40,6 @@ this allows extra dependencies to be specified and the version of serverspec spe
 
 key | default value | Notes
 ----|---------------|--------
-
 additional_install_commmand | nil | Additional shell command to be used at install stage. Can be multiline. See examples below.
 additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
 bundler_path | | override path for bundler command
