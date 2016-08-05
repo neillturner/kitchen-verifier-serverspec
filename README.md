@@ -40,29 +40,38 @@ this allows extra dependencies to be specified and the version of serverspec spe
 
 key | default value | Notes
 ----|---------------|--------
-sleep | 0 |
-remote_exec | true | specify false to run serverspec on workstation
-custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
-additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
-format | 'documentation' | format of serverspec output
-color | true | enable color in the output
-default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
-patterns | [] | array of patterns for spec test files
-gemfile | nil | custom gemfile to use to install serverspec
-custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
+
 additional_install_commmand | nil | Additional shell command to be used at install stage. Can be multiline. See examples below.
-test_serverspec_installed | true | only run install_command if serverspec not installed
+additional_serverspec_command | nil | additional command to run serverspec. Can be multiline. See examples below.
+bundler_path | | override path for bundler command
+color | true | enable color in the output
+custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
+custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
+default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
+env_vars | {} | environment variable to set for rspec and can be used in the spec_helper. It will automatically pickup any environment variables set with a KITCHEN_ prefix.
 extra_flags | nil | extra flags to add to ther serverspec command
-remove_default_path | false | remove the default_path after successful serverspec run
+format | 'documentation' | format of serverspec output
+gemfile | nil | custom gemfile to use to install serverspec
 http_proxy | nil | use http proxy when installing ruby, serverspec and running serverspec
 https_proxy | nil | use https proxy when installing puppet, ruby, serverspec and running serverspec
-sudo | nil | use sudo to run commands
-sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
-env_vars | {} | environment variable to set for rspec and can be used in the spec_helper. It will automatically pickup any environment variables set with a KITCHEN_ prefix.
-bundler_path | | override path for bundler command
+patterns | [] | array of patterns for spec test files
+remote_exec | true | specify false to run serverspec on workstation
+remove_default_path | false | remove the default_path after successful serverspec run
+require_runner | false | run the custom runner instead of rspec directly
 rspec_path | | override path for rspec command
 runner_url | https://raw.githubusercontent.com /neillturner/serverspec-runners/ master/ansiblespec_runner.rb | url for custom runner
-require_runner | false | run the custom runner instead of rspec directly
+sleep | 0 |
+sudo | nil | use sudo to run commands
+sudo_command | 'sudo -E -H' | sudo command to run when sudo set to true
+test_serverspec_installed | true | only run install_command if serverspec not installed
+
+## Tips
+
+If you get errors like 'Bundler installed as root, can't be found' then you will need to set the paths. Its hard to get thedefault paths correct when ruby maybe installed in a different user.
+```
+bundler_path: '/usr/local/bin'
+rspec_path: '/usr/local/bin'
+```
 
 ## Usage
 
