@@ -256,7 +256,7 @@ module Kitchen
         info('Running Serverspec')
         if config[:default_pattern]
           info("Using default pattern #{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb")
-          config[:patterns].push("#{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb")
+          config[:patterns] = ["#{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb"]
         end
         if config[:require_runner]
           "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
