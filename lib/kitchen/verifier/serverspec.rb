@@ -375,6 +375,7 @@ module Kitchen
             value = instance.transport[key.to_sym].to_s
             ENV['KITCHEN_' + key.to_s.upcase] =value
             info("Transport Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
+          end
         end
         config[:shellout_opts].merge!(env_state)
       end
