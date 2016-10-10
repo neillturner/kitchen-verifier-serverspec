@@ -35,6 +35,7 @@ module Kitchen
       default_config :color, true
       default_config :default_path, '/tmp/kitchen'
       default_config :patterns, []
+      default_config :default_pattern, false
       default_config :gemfile, nil
       default_config :custom_install_command, nil
       default_config :additional_install_command, nil
@@ -253,6 +254,10 @@ module Kitchen
 
       def rspec_commands
         info('Running Serverspec')
+        if config[:default_pattern]
+          info("Using default pattern #{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb")
+          config[:patterns] = ["#{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb"]
+        end
         if config[:require_runner]
           "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
         elsif config[:remote_exec]
