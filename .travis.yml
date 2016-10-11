@@ -6,4 +6,4 @@ rvm:
   - 2.2
   - 2.3.1
 before_install:
-  - gem install bundler -v 1.10.6
+  - gem install rubocop -v 0.41.2
