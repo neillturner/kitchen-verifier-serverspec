@@ -371,12 +371,11 @@ module Kitchen
           info("Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
         end
         # if using a driver that uses transport expose those too
-        ['username', 'password', 'ssh_key', 'port'].each do |key|
-          unless instance.transport[key.to_sym].nil?
-            value = instance.transport[key.to_sym].to_s
-            ENV['KITCHEN_' + key.to_s.upcase] = value
-            info("Transport Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
-          end
+        %w('username', 'password', 'ssh_key', 'port').each do |key|
+          next if instance.transport[key.to_sym].nil?
+          value = instance.transport[key.to_sym].to_s
+          ENV['KITCHEN_' + key.to_s.upcase] = value
+          info("Transport Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
         end
         config[:shellout_opts].merge!(env_state)
       end
