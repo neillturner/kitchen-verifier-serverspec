@@ -5,5 +5,3 @@ rvm:
   - 2.1.5
   - 2.2
   - 2.3.1
-before_install:
-  - gem install rubocop -v 0.41.2
