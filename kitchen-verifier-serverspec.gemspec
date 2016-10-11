@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.rubyforge_project = '[none]'
   s.add_dependency 'test-kitchen', '~> 1.4'
+  s.add_dependency 'json', '>= 1.8', '< 3'
   if RUBY_VERSION >= '2.0'
     s.add_dependency 'net-ssh', '~> 3'
   else
