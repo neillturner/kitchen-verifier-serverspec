@@ -20,7 +20,9 @@ Gem::Specification.new do |s|
   if RUBY_VERSION >= '2.0'
     s.add_dependency 'net-ssh', '~> 3'
   else
+    s.add_dependency 'json', '~> 1.8'
     s.add_dependency 'net-ssh', '~> 2.9'
+    s.add_dependency 'rubocop', '~> 0.41.2'
   end
   s.description = <<-EOF
 Serverspec verifier for Test-Kitchen without having to transit the Busser layer.

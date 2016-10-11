@@ -1,5 +1,5 @@
 module Kitchen
   module Verifier
-    SERVERSPEC_VERSION = '0.5.2'.freeze
+    SERVERSPEC_VERSION = '0.6.0'.freeze
   end
 end
