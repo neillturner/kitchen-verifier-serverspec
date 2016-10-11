@@ -165,17 +165,13 @@ module Kitchen
       end
 
       def install_runner
-        if config[:require_runner]
-          if config[:remote_exec]
-            <<-INSTALL
-              if [ ! -f #{config[:default_path]}/#{runner_filename} ]; then
-                #{sudo_env('curl')} -o #{config[:default_path]}/#{runner_filename} #{config[:runner_url]}
-              fi
-            INSTALL
-          else
-            raise ActionFailed, 'Serverspec Runners only for remote execution'
-          end
-        end
+        return unless config[:require_runner]
+        raise ActionFailed, 'Serverspec Runners only for remote execution' unless config[:remote_exec]
+        <<-INSTALL
+          if [ ! -f #{config[:default_path]}/#{runner_filename} ]; then
+            #{sudo_env('curl')} -o #{config[:default_path]}/#{runner_filename} #{config[:runner_url]}
+          fi
+        INSTALL
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -375,10 +371,10 @@ module Kitchen
           info("Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
         end
         # if using a driver that uses transport expose those too
-        ["username", "password", "ssh_key", "port"].each do |key|
+        ['username', 'password', 'ssh_key', 'port'].each do |key|
           unless instance.transport[key.to_sym].nil?
             value = instance.transport[key.to_sym].to_s
-            ENV['KITCHEN_' + key.to_s.upcase] =value
+            ENV['KITCHEN_' + key.to_s.upcase] = value
             info("Transport Environment variable #{'KITCHEN_' + key.to_s.upcase} value #{value}")
           end
         end

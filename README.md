@@ -47,6 +47,7 @@ color | true | enable color in the output
 custom_install_commmand | nil | Custom shell command to be used at install stage. Can be multiline. See examples below.
 custom_serverspec_command | nil | custom command to run serverspec. Can be multiline. See examples below.
 default_path | '/tmp/kitchen' | Set the default path where serverspec looks for patterns
+default_pattern | false | use default dir behaviour of busser i.e. test/integration/SUIT_NAME/serverspec/*_spec.rb
 env_vars | {} | environment variable to set for rspec and can be used in the spec_helper. It will automatically pickup any environment variables set with a KITCHEN_ prefix.
 extra_flags | nil | extra flags to add to ther serverspec command
 format | 'documentation' | format of serverspec output
