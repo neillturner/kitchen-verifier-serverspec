@@ -349,6 +349,7 @@ module Kitchen
       end
 
       def shellout(command)
+        command = command.strip
         info("Running command: #{command}")
         cmd = Mixlib::ShellOut.new(command, config[:shellout_opts])
         cmd.live_stream = config[:live_stream]
