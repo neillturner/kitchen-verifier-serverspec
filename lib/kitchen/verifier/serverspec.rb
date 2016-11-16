@@ -196,8 +196,10 @@ module Kitchen
           end
           unless config[:gemfile]
             gemfile = "#{config[:default_path]}/Gemfile"
-            File.open(gemfile, 'w') do |f|
-              f.write("source 'https://rubygems.org'\ngem 'net-ssh','~> 2.9.4'\ngem 'serverspec'")
+            unless File.exist?(gemfile)
+              File.open(gemfile, 'w') do |f|
+                f.write("source 'https://rubygems.org'\ngem 'net-ssh','~> 2.9.4'\ngem 'serverspec'")
+              end
             end
           end
           gemfile = config[:gemfile] if config[:gemfile]
