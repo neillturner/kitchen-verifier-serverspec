@@ -56,14 +56,14 @@ module Kitchen
         if config[:remote_exec]
           if config[:default_pattern]
             create_sandbox
-            sandbox_dirs = Dir.glob(File.join(sandbox_path, "*"))
+            sandbox_dirs = Dir.glob(File.join(sandbox_path, '*'))
           end
           instance.transport.connection(state) do |conn|
             conn.execute(install_command)
             if config[:default_pattern]
               info("Transferring files to #{instance.to_str}")
               conn.upload(sandbox_dirs, config[:root_path])
-              debug("Transfer complete")
+              debug('Transfer complete')
             end
             conn.execute(serverspec_commands)
           end
@@ -92,7 +92,6 @@ module Kitchen
         super
         prepare_suites
       end
-
 
       def serverspec_commands
         if config[:remote_exec]
@@ -271,9 +270,6 @@ module Kitchen
         info('Running Serverspec')
         if config[:default_pattern]
           if config[:remote_exec]
-            #info("Using default pattern #{config[:default_path]}/test/integration/#{config[:suite_name]}/serverspec/*_spec.rb")
-            #config[:patterns] = ["#{config[:default_path]}/test/integration/#{config[:suite_name]}/serverspec/*_spec.rb"]
-
             info("Using default pattern #{config[:root_path]}/suites/serverspec/*_spec.rb")
             config[:patterns] = ["#{config[:root_path]}/suites/serverspec/*_spec.rb"]
           else
@@ -420,7 +416,7 @@ module Kitchen
       # @api private
       def local_suite_files
         base = File.join(config[:test_base_path], config[:suite_name])
-        glob = File.join(base, "*/**/*")
+        glob = File.join(base, '*/**/*')
         Dir.glob(glob).reject do |f|
           chef_data_dir?(base, f) || File.directory?(f)
         end
@@ -431,7 +427,7 @@ module Kitchen
         base = File.join(config[:test_base_path], config[:suite_name])
         debug("Creating local sandbox of all test suite files in #{base}")
         local_suite_files.each do |src|
-          dest = File.join(sandbox_suites_dir, src.sub("#{base}/", ""))
+          dest = File.join(sandbox_suites_dir, src.sub("#{base}/", ''))
           FileUtils.mkdir_p(File.dirname(dest))
           FileUtils.cp(src, dest, :preserve => true)
         end
@@ -440,9 +436,8 @@ module Kitchen
       # @return [String] path to suites directory under sandbox path
       # @api private
       def sandbox_suites_dir
-        File.join(sandbox_path, "suites")
+        File.join(sandbox_path, 'suites')
       end
-
     end
   end
 end
