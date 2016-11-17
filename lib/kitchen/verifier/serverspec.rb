@@ -54,10 +54,20 @@ module Kitchen
         sleep_if_set
         merge_state_to_env(state)
         if config[:remote_exec]
+          if config[:default_pattern]
+            create_sandbox
+            sandbox_dirs = Dir.glob(File.join(sandbox_path, "*"))
+          end
           instance.transport.connection(state) do |conn|
             conn.execute(install_command)
+            if config[:default_pattern]
+              info("Transferring files to #{instance.to_str}")
+              conn.upload(sandbox_dirs, config[:root_path])
+              debug("Transfer complete")
+            end
             conn.execute(serverspec_commands)
           end
+          cleanup_sandbox if config[:default_pattern]
         else
           config[:default_path] = Dir.pwd if config[:default_path] == '/tmp/kitchen'
           install_command
@@ -76,6 +86,13 @@ module Kitchen
         sleep_if_set
         install_command
       end
+
+      # (see Base#create_sandbox)
+      def create_sandbox
+        super
+        prepare_suites
+      end
+
 
       def serverspec_commands
         if config[:remote_exec]
@@ -253,8 +270,16 @@ module Kitchen
       def rspec_commands
         info('Running Serverspec')
         if config[:default_pattern]
-          info("Using default pattern #{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb")
-          config[:patterns] = ["#{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb"]
+          if config[:remote_exec]
+            #info("Using default pattern #{config[:default_path]}/test/integration/#{config[:suite_name]}/serverspec/*_spec.rb")
+            #config[:patterns] = ["#{config[:default_path]}/test/integration/#{config[:suite_name]}/serverspec/*_spec.rb"]
+
+            info("Using default pattern #{config[:root_path]}/suites/serverspec/*_spec.rb")
+            config[:patterns] = ["#{config[:root_path]}/suites/serverspec/*_spec.rb"]
+          else
+            info("Using default pattern #{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb")
+            config[:patterns] = ["#{config[:test_base_path]}/#{config[:suite_name]}/serverspec/*_spec.rb"]
+          end
         end
         if config[:require_runner]
           "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{rspec_path_option} #{config[:extra_flags]}"
@@ -382,6 +407,42 @@ module Kitchen
         end
         config[:shellout_opts].merge!(env_state)
       end
+
+      def chef_data_dir?(base, file)
+        file =~ %r{^#{base}/(data|data_bags|environments|nodes|roles)/}
+      end
+
+      # Returns an Array of test suite filenames for the related suite currently
+      # residing on the local workstation. Any special provisioner-specific
+      # directories (such as a Chef roles/ directory) are excluded.
+      #
+      # @return [Array<String>] array of suite files
+      # @api private
+      def local_suite_files
+        base = File.join(config[:test_base_path], config[:suite_name])
+        glob = File.join(base, "*/**/*")
+        Dir.glob(glob).reject do |f|
+          chef_data_dir?(base, f) || File.directory?(f)
+        end
+      end
+
+      # Copies all test suite files into the suites directory in the sandbox.
+      def prepare_suites
+        base = File.join(config[:test_base_path], config[:suite_name])
+        debug("Creating local sandbox of all test suite files in #{base}")
+        local_suite_files.each do |src|
+          dest = File.join(sandbox_suites_dir, src.sub("#{base}/", ""))
+          FileUtils.mkdir_p(File.dirname(dest))
+          FileUtils.cp(src, dest, :preserve => true)
+        end
+      end
+
+      # @return [String] path to suites directory under sandbox path
+      # @api private
+      def sandbox_suites_dir
+        File.join(sandbox_path, "suites")
+      end
+
     end
   end
 end
