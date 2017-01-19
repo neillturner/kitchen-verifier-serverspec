@@ -134,7 +134,7 @@ module Kitchen
               if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
                 #{sudo_env('yum')} -y install ruby
               else
-                if [ -f /etc/system-release ] || [ grep -q 'Amazon Linux' /etc/system-release ]; then
+                if [ -f /etc/system-release ] && grep -q 'Amazon Linux' /etc/system-release; then
                   #{sudo_env('yum')} -y install ruby
                 else
                   #{sudo_env('apt-get')} -y install ruby
