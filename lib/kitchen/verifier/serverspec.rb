@@ -259,7 +259,7 @@ module Kitchen
       end
 
       def test_serverspec_installed
-        config[:test_serverspec_installed] ? "if [ $(#{sudo('gem')} list serverspec -i) == 'false' ]; then" : nil
+        config[:test_serverspec_installed] ? "if [ $(#{sudo('gem')} list serverspec -i) = 'false' ]; then" : nil
       end
 
       def fi_test_serverspec_installed
