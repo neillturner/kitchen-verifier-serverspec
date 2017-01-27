@@ -322,7 +322,7 @@ module Kitchen
       end
 
       def bundler_cmd
-        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : '`command -v bundle`'
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : 'bundle'
       end
 
       def bundler_local_cmd
