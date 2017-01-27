@@ -167,7 +167,7 @@ module Kitchen
       def install_bundler
         if config[:remote_exec]
           <<-INSTALL
-            if [ $(#{sudo('gem')} list bundler -i) == 'false' ]; then
+            if ! command -v bundle; then
               #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
             fi
           INSTALL
@@ -322,7 +322,7 @@ module Kitchen
       end
 
       def bundler_cmd
-        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : '$(which bundle)'
+        config[:bundler_path] ? "#{config[:bundler_path]}/bundle" : 'bundle'
       end
 
       def bundler_local_cmd
