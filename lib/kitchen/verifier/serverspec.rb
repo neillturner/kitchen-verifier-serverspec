@@ -105,7 +105,7 @@ module Kitchen
             mkdir -p #{config[:default_path]}
             cd #{config[:default_path]}
             RSPEC_CMD=#{rspec_bash_cmd}
-            echo $RSPEC_CMD
+            echo "---> RSPEC_CMD variable is: ${RSPEC_CMD}"
             #{rspec_commands}
             #{remove_default_path}
             INSTALL
@@ -167,8 +167,15 @@ module Kitchen
       def install_bundler
         if config[:remote_exec]
           <<-INSTALL
-            if [ $(#{sudo('gem')} list bundler -i) == 'false' ]; then
-              #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+            if [ \"$(#{sudo('gem')} list bundler -i)\" == \"true\" ]; then
+              echo "Bundler already installed"
+            else
+              if [ \"$(#{sudo('gem')} list bundler -i)\" == \"false\" ]; then
+                #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+              else
+                echo "ERROR: Ruby not installed correctly"
+                exit 1
+              fi
             fi
           INSTALL
         else
@@ -197,7 +204,7 @@ module Kitchen
               #{test_serverspec_installed}
               #{install_gemfile}
               BUNDLE_CMD=#{bundler_cmd}
-              echo $BUNDLE_CMD
+              echo "---> BUNDLE_CMD variable is: ${BUNDLE_CMD}"
               #{sudo_env('')} $BUNDLE_CMD install --gemfile=#{config[:default_path]}/Gemfile
             #{fi_test_serverspec_installed}
           INSTALL
@@ -259,7 +266,7 @@ module Kitchen
       end
 
       def test_serverspec_installed
-        config[:test_serverspec_installed] ? "if [ $(#{sudo('gem')} list serverspec -i) == 'false' ]; then" : nil
+        config[:test_serverspec_installed] ? "if [ \"$(#{sudo('gem')} list serverspec -i)\" == \"false\" ]; then" : nil
       end
 
       def fi_test_serverspec_installed
