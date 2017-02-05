@@ -167,10 +167,10 @@ module Kitchen
       def install_bundler
         if config[:remote_exec]
           <<-INSTALL
-            if [ \"$(#{sudo('gem')} list bundler -i)\" == \"true\" ]; then
+            if [ \"$(#{sudo('gem')} list bundler -i)\" = \"true\" ]; then
               echo "Bundler already installed"
             else
-              if [ \"$(#{sudo('gem')} list bundler -i)\" == \"false\" ]; then
+              if [ \"$(#{sudo('gem')} list bundler -i)\" = \"false\" ]; then
                 #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
               else
                 echo "ERROR: Ruby not installed correctly"
@@ -266,7 +266,7 @@ module Kitchen
       end
 
       def test_serverspec_installed
-        config[:test_serverspec_installed] ? "if [ \"$(#{sudo('gem')} list serverspec -i)\" == \"false\" ]; then" : nil
+        config[:test_serverspec_installed] ? "if [ \"$(#{sudo('gem')} list serverspec -i)\" = \"false\" ]; then" : nil
       end
 
       def fi_test_serverspec_installed
