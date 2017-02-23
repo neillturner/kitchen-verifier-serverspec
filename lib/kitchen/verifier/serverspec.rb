@@ -54,6 +54,7 @@ module Kitchen
         sleep_if_set
         merge_state_to_env(state)
         if config[:remote_exec]
+          debug('Running Serverspec on remote server')
           if config[:default_pattern]
             create_sandbox
             sandbox_dirs = Dir.glob(File.join(sandbox_path, '*'))
@@ -69,6 +70,7 @@ module Kitchen
           end
           cleanup_sandbox if config[:default_pattern]
         else
+          debug('Running Serverspec locally on workstation')
           config[:default_path] = Dir.pwd if config[:default_path] == '/tmp/kitchen'
           install_command
           serverspec_commands
