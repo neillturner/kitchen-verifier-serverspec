@@ -84,8 +84,9 @@ Verifier Serverspec allows the serverspec files to be anywhere in the repository
 
 ### Windows  
 
-A good example of using severspec wit windows can be found at
-https://github.com/josephkumarmichael/centos-serverspec-windows-testbed
+A good example of using severspec wit windows can be found at:
+* https://github.com/josephkumarmichael/centos-serverspec-windows-testbed
+* Windows spec_helper.rb sample: https://github.com/josephkumarmichael/centos-serverspec-windows-testbed/blob/master/tests/spec/spec_helper.rb
 
 ### Spec File Location and Updating
 
