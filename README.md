@@ -82,6 +82,11 @@ There are three ways to run verifier serverspec:
 
 Verifier Serverspec allows the serverspec files to be anywhere in the repository or in the test-kitchen default location i.e /test/integration. This means that you can use spec files that follow ansiblespec or puppet beaker locations.
 
+### Windows  
+
+A good example of using severspec wit windows can be found at
+https://github.com/josephkumarmichael/centos-serverspec-windows-testbed
+
 ### Spec File Location and Updating
 
 When remote_exec is set to true (the default) the following rules apply for getting the spec files to the remote server instance.
