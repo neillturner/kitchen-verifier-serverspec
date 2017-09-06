@@ -16,14 +16,9 @@ Gem::Specification.new do |s|
   s.platform      = Gem::Platform::RUBY
   s.require_paths = ['lib']
   s.rubyforge_project = '[none]'
+  s.required_ruby_version = '>= 2.0'
   s.add_dependency 'test-kitchen', '~> 1.4'
-  if RUBY_VERSION >= '2.0'
-    s.add_dependency 'net-ssh', '>= 3'
-  else
-    s.add_dependency 'json', '~> 1.8'
-    s.add_dependency 'net-ssh', '~> 2.9'
-    s.add_dependency 'rubocop', '~> 0.41.2'
-  end
+  s.add_dependency 'net-ssh', '>= 3'
   s.description = <<-EOF
 Serverspec verifier for Test-Kitchen without having to transit the Busser layer.
 EOF
