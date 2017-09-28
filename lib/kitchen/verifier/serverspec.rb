@@ -57,7 +57,7 @@ module Kitchen
           debug('Running Serverspec on remote server')
           if config[:default_pattern]
             create_sandbox
-            sandbox_dirs = Dir.glob(File.join(sandbox_path, '*'))
+            sandbox_dirs = [ sandbox_path ]
           end
           instance.transport.connection(state) do |conn|
             conn.execute(install_command)
