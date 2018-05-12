@@ -139,6 +139,7 @@ module Kitchen
                 if [ -f /etc/system-release ] && grep -q 'Amazon Linux' /etc/system-release; then
                   #{sudo_env('yum')} -y install ruby
                 else
+                  #{sudo_env('apt-get')} -y update
                   #{sudo_env('apt-get')} -y install ruby
                 fi
               fi
