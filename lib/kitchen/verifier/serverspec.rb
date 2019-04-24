@@ -170,14 +170,20 @@ module Kitchen
       def install_bundler
         if config[:remote_exec]
           <<-INSTALL
-            if [ \"$(#{sudo('gem')} list bundler -i)\" = \"true\" ]; then
-              echo "Bundler already installed"
+            if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
+              echo '-----> Installing os provided bundler package'
+              #{sudo_env('yum')} -y install rubygem-bundler
             else
-              if [ \"$(#{sudo('gem')} list bundler -i)\" = \"false\" ]; then
-                #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+              echo '-----> Installing bundler via rubygems'
+              if [ \"$(#{sudo('gem')} list bundler -i)\" = \"true\" ]; then
+                echo "Bundler already installed"
               else
-                echo "ERROR: Ruby not installed correctly"
-                exit 1
+                if [ \"$(#{sudo('gem')} list bundler -i)\" = \"false\" ]; then
+                  #{sudo_env('gem')} install #{gem_proxy_parm} --no-ri --no-rdoc bundler
+                else
+                  echo "ERROR: Ruby not installed correctly"
+                  exit 1
+                fi
               fi
             fi
           INSTALL
