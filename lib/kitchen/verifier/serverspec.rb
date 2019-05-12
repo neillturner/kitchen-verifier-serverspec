@@ -247,7 +247,7 @@ module Kitchen
           <<-INSTALL
           #{sudo('rm')} -f #{config[:default_path]}/Gemfile
           #{sudo('echo')} "source 'https://rubygems.org'" >> #{config[:default_path]}/Gemfile
-          #{sudo('echo')} "gem 'net-ssh','~> 2.9'"  >> #{config[:default_path]}/Gemfile
+          #{sudo('echo')} "gem 'net-ssh','~> 3'"  >> #{config[:default_path]}/Gemfile
           #{sudo('echo')} "gem 'serverspec'" >> #{config[:default_path]}/Gemfile
           INSTALL
         end
