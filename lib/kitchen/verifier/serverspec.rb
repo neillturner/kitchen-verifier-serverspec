@@ -298,7 +298,7 @@ module Kitchen
         elsif config[:remote_exec]
           config[:patterns].map { |s| "#{env_vars} #{sudo_env('')} $RSPEC_CMD #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join(';')
         else
-          config[:patterns].map { |s| "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} -P #{s}" }.join(';')
+          config[:patterns].empty? ? '' : "#{env_vars} #{sudo_env(rspec_cmd)} #{color} -f #{config[:format]} --default-path  #{config[:default_path]} #{config[:extra_flags]} #{config[:patterns].map { |s| "-P #{s}" }.join(' ')}"
         end
       end
 
