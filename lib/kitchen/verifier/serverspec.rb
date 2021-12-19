@@ -170,7 +170,7 @@ module Kitchen
       def install_bundler
         if config[:remote_exec]
           <<-INSTALL
-            if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ]; then
+            if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ] || ( [ -f /etc/os-release ] && grep -q 'Amazon Linux 2' /etc/os-release ); then
               echo '-----> Installing os provided bundler package'
               #{sudo_env('yum')} -y install rubygem-bundler
             else
