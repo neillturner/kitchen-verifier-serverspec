@@ -173,6 +173,9 @@ module Kitchen
             if [ -f /etc/centos-release ] || [ -f /etc/redhat-release ] || [ -f /etc/oracle-release ] || ( [ -f /etc/os-release ] && grep -q 'Amazon Linux 2' /etc/os-release ); then
               echo '-----> Installing os provided bundler package'
               #{sudo_env('yum')} -y install rubygem-bundler
+            elif [ -f /etc/debian_version ] || ( [ -f /etc/os-release ] && grep -q 'Ubuntu' /etc/os-release ); then
+              echo '-----> Installing os provided bundler package'
+              #{sudo_env('apt-get')} install -y ruby-bundler
             else
               echo '-----> Installing bundler via rubygems'
               if [ \"$(#{sudo('gem')} list bundler -i)\" = \"true\" ]; then
