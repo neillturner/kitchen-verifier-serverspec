@@ -21,7 +21,7 @@ module Kitchen
 
       kitchen_verifier_api_version 1
 
-      plugin_version Kitchen::VERSION
+      plugin_version Kitchen::Verifier::SERVERSPEC_VERSION
 
       default_config :sleep, 0
       default_config :serverspec_command, nil
